@@ -1,113 +1,124 @@
 <script setup lang="ts">
-const route = useRoute()
+import Logo from '~/assets/icons/logo.svg'
+import DeadCatMask from '~/assets/icons/dead-cat-mask.svg'
+import DeadCat from '~/assets/icons/dead-cat-mask.svg'
+
+const homePage = useTemplateRef<HTMLDivElement>('homePage')
+const deadKitten = useTemplateRef<HTMLDivElement>('deadKitten')
+const animateMask = () => {
+  if (homePage.value == null || deadKitten.value === null) return
+
+  homePage.value.classList.toggle('mask-animation')
+  setTimeout(() => {
+    deadKitten.value.classList.toggle('mask-animation')
+  }, 800)
+}
+
+
 </script>
 
 <template>
-  <main class="lulujeje-home">
-    <div class="lulujeje-home__top-plane"></div>
-    <div class="lulujeje-home__coming-soon">
-      <h1>Lulu & Jéjé</h1>
-      <h2>
-        We are Ludovic (Lulu) and Jerome (Jeje). <br>
-        We craft your online identity one pixel at a time, <br>
-        from our little creative nook<br>
-        on Shonan's sunny coastline.
-      </h2>
+  <DeadCatMask />
+
+  <main ref="deadKitten" class="lulujeje-dead-kitten">
+    <DeadCat />
+  </main>
+
+  <main ref="homePage" class="lulujeje-home">
+    <div class="lulujeje-home__main-content">
+      <h1
+        @click="animateMask"
+      >
+        <Logo />
+        Lulu & Jéjé
+      </h1>
     </div>
-    <div class="lulujeje-home__bottom-plane"></div>
   </main>
 </template>
 
 <style lang="scss">
 :root {
-  --visual-distortion-zapper: 720px;
-  --animation-duration: 4s;
-  --bg-color: #FDBBF9;
-  --lines: #FFCCFC;
+  --bg-color: #FFBBF9;
+  --bg-color-dead: #FF2C2C;
+  --logo-letter-color: #FFCCFC;
+  --logo-bg-color: #FF2C2C;
 }
 
-html, body {
-  overflow: hidden;
-  height: 100%;
+.lulujeje-dead-kitten {
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  background-image: url( '~/assets/images/deadcat.png' );
+  background-color: var(--bg-color-dead);
+  background-position: center center;
+  background-size: 0 0;
+  background-blend-mode: overlay;
+  background-repeat: no-repeat;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  z-index: 1;
+
+  &.mask-animation {
+    background-size: 513px 426px;
+  }
 }
 
-body {
-  background: linear-gradient(var(--bg-color) 40%, var(--lines) 50%, var(--lines) 40%, var(--bg-color) 100%);  
-  position: relative;
-  height: 100%;
-}
 
 .lulujeje-home {
-  perspective: var(--visual-distortion-zapper);
-  perspective-origin: 50% 50%;
+  transform: translate3d(-50%, -50%, 0);
+  transform-origin: center;
+  transform-box: fill-box;
+
+  background-image: url('~/assets/images/home-background.png');
+  background-color: var(--bg-color);
+  clip-path: url(#dead-cat-mask);
+  background-blend-mode: overlay;
+  background-size: auto 120px;
+  justify-content: center;
+  align-items: center;
   position: absolute;
-  margin: 0 auto;
-  height: 100%;
-  width: 100%;
+  display: flex;
+  height: 200vh;
+  width: 200%;
+  z-index: 2;
+  left: 50%;
+  top: 50%;
+  &__main-content {
+    width: 300px;
+    h1 {
+      font-size: 0;
+      margin: 0;
+    }
 
-  &__coming-soon {
-    transform: translate3d(-50%, -50%, 0);
-    position: absolute;
-    text-align: center;
-    width: 100%;
-    z-index: 99;
-    left: 50%;
-    top: 50%;
+    svg {
+      height: auto;
+      width: 100%;
+
+      .logo-background {
+        fill: var(--logo-bg-color);
+      }
+
+      .logo-letter {
+        fill: var(--logo-letter-color);
+      }
+    }
   }
 
-  h1 {
-    font-family: "Rouge Script", serif;
-    margin: 0 auto 24px;
-    font-style: normal;
-    font-weight: 700;
-    font-size: 80px;
-    color: #FF2C2B;
-  }
-
-  h2 {
-    font-family: sans-serif;
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 20px;
-    color: #FF2C2B;
-  }
-
-  &__top-plane,
-  &__bottom-plane {
-    width: 200%;
-    height: 130%;
-    position: absolute;
-    bottom: -30%;
-    left: -50%;
-    background-image: -webkit-linear-gradient(var(--lines) 2px, transparent 2px), -webkit-linear-gradient(left, var(--lines) 2px, transparent 2px);
-    background-size: 100px 100px,100px 100px;
-    background-position: -1px -1px,-1px -1px;
-    transform: rotateX(85deg);
-    animation: planeMoveTop var(--animation-duration) infinite linear;
-  }
-
-  &__bottom-plane {
-    animation: planeMoveBot var(--animation-duration) infinite linear;
-    transform: rotateX(-85deg);
-    top: -30%;
+  &.mask-animation {
+    animation: mask-animation 0.8s forwards cubic-bezier(0.83, 0, 0.17, 1);
   }
 }
 
-@keyframes planeMoveTop {
-  from {
-    background-position: 0px -100px,0px 0px;
+@keyframes mask-animation {
+  0% {
+    width: 2052px;
+    height: 1704px;
   }
-  to {
-    background-position: 0px 0px, 100px 0px;
-  }
-}
-
-@keyframes planeMoveBot {
-  from {
-    background-position: 0px 0px,0px 0px;
-  }
-  to {
-    background-position: 0px -100px, 100px 0px;
+  100% {
+    width: 0;
+    height: 0;
   }
 }
 </style>
