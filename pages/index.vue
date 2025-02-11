@@ -4,7 +4,7 @@
 
     <main ref="deadKitten" class="lulujeje-dead-kitten">
       <p class="lulujeje-dead-kitten__description" v-html="blameOnUser" />
-      <button ref="closeButton" @click="toggleClass"><CrossIcon /></button>
+      <button ref="closeButton" @click="toggleClass" aria-label="Go back"><CrossIcon /></button>
     </main>
 
     <main ref="homePage" class="lulujeje-home lulujeje-home--circles-bg-animation">
