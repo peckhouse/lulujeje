@@ -21,7 +21,7 @@
       </div>
     </main>
 
-    <footer v-if="!blameOnUser" class="lulujeje-home__footer">You can always drop us an email at <a href="mailto:hello@lulugege.com" title="Drop us an email!">hello@lulugege.com</a></footer>
+    <footer v-if="!blameOnUser" class="lulujeje-home__footer">You can always drop us an email at <a href="mailto:hello@lulugege.com" title="Drop us an email!">hello@lulujeje.com</a></footer>
   </div>
 </template>
 
