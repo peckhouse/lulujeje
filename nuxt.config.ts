@@ -23,7 +23,9 @@ export default defineNuxtConfig({
   },
   googleFonts: {
     families: {
-      'Rouge+Script': true
+      'Roboto': {
+        wght: '200..900'
+      }
     }
   }
 })
