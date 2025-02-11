@@ -3,6 +3,7 @@
 
   <main ref="deadKitten" class="lulujeje-dead-kitten">
     <p class="lulujeje-dead-kitten__description" v-html="blameOnUser" />
+    <button ref="closeButton" @click="animateMask"><CrossIcon /></button>
   </main>
 
   <main ref="homePage" class="lulujeje-home lulujeje-home--circles-bg-animation">
@@ -25,21 +26,30 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
+import CrossIcon from '~/assets/icons/cross.svg'
 import Logo from '~/assets/icons/logo.svg'
 import DeadCatMask from '~/assets/icons/dead-cat-mask.svg'
+
+
+// ES7 timer
+const timer = (ms: number) => new Promise(res => setTimeout(res, ms))
 
 // Don't click button mask animation
 const homePage = useTemplateRef<HTMLDivElement>('homePage')
 const deadKitten = useTemplateRef<HTMLDivElement>('deadKitten')
+const closeButton = useTemplateRef<HTMLDivElement>('closeButton')
+const timeOut = ref<NodeJS.Timeout | null>(null)
 const animateMask = () => {
-  homePage.value?.classList.add('lulujeje-home--mask-animation')
+  homePage.value?.classList.toggle('lulujeje-home--mask-animation')
   setTimeout(() => {
-    deadKitten.value?.classList.add('lulujeje-dead-kitten--mask-animation')
+    deadKitten.value?.classList.toggle('lulujeje-dead-kitten--mask-animation')
   }, 800)
 
-  setTimeout(() => {
-    typewriter()
-  }, 1500)
+  if (timeOut.value) clearTimeout(timeOut.value)
+
+  blameOnUser.value = ''
+  closeButton.value?.classList.remove('fade-up')
+  timeOut.value =  setTimeout(typewriter, 1500)
 }
 
 // Dead kitten type text
@@ -51,7 +61,6 @@ const sentences = ref([
 const blameOnUser = ref('')
 const deadKittenCount = ref(20)
 
-const timer = (ms: number) => new Promise(res => setTimeout(res, ms))
 const typewriter = async () => {
   for (const [sentenceIndex, sentence] of sentences.value.entries()) {
     for (let charIndex=0; charIndex <= sentence.length; charIndex++) {
@@ -60,12 +69,13 @@ const typewriter = async () => {
       await timer(40)
     }
 
-    if (sentenceIndex < sentences.value.length - 1)blameOnUser.value+= '<br/>'
+    if (sentenceIndex < sentences.value.length - 1) blameOnUser.value+= '<br/>'
     await timer(60)
   }
 
   await timer(60)
   blameOnUser.value+= `<span>${deadKittenCount.value}</span>`
+  closeButton.value?.classList.add('fade-up')
 }
 </script>
 
@@ -117,11 +127,7 @@ html, body {
   width: 100%;
   z-index: 1;
 
-  &--mask-animation {
-    background-size: 256px 213px;
-  }
-
-  &__description {
+  p {
     color: var(--dead-kitten-text);
     font-family: "Roboto", serif;
     text-align: center;
@@ -133,6 +139,37 @@ html, body {
     span {
       color: var(--dead-kitten-number);
     }
+  }
+
+  button {
+    @include button-reset();
+
+    transition: all 0.6s ease-in-out;
+
+    left: calc(50% - 12px);
+    pointer-events: none;
+    position: absolute;
+    color: #FFFFFF;
+    cursor: pointer;
+    bottom: -40px;
+    height: 32px;
+    width: 32px;
+    opacity: 0;
+
+    &.fade-up {
+      pointer-events: auto;
+      bottom: 40px;
+      opacity: 1;
+    }
+
+    svg {
+      height: 32px;
+      width: 32px;
+    }
+  }
+
+  &--mask-animation {
+    background-size: 256px 213px;
   }
 }
 
