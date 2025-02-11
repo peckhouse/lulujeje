@@ -4,7 +4,7 @@
 
     <main ref="deadKitten" class="lulujeje-dead-kitten">
       <p class="lulujeje-dead-kitten__description" v-html="blameOnUser" />
-      <button ref="closeButton" @click="animateMask"><CrossIcon /></button>
+      <button ref="closeButton" @click="toggleClass"><CrossIcon /></button>
     </main>
 
     <main ref="homePage" class="lulujeje-home lulujeje-home--circles-bg-animation">
@@ -33,7 +33,6 @@ import Logo from '~/assets/icons/logo.svg'
 import DeadCatMask from '~/assets/icons/dead-cat-mask.svg'
 
 //Color switcher
-
 const COLORS = {
   PINK: {
     colorScheme: 'pink',
@@ -78,7 +77,6 @@ const COLORS = {
     footerTextColor: '#2B00BA'
   }
 }
-
 const currentColor = ref(COLORS.PINK)
 const switchColor = () => {
   switch (currentColor.value.colorScheme) {
@@ -92,6 +90,7 @@ const switchColor = () => {
       currentColor.value = COLORS.PINK
   }
 }
+
 // ES7 timer
 const timer = (ms: number) => new Promise(res => setTimeout(res, ms))
 
@@ -100,14 +99,17 @@ const homePage = useTemplateRef<HTMLDivElement>('homePage')
 const deadKitten = useTemplateRef<HTMLDivElement>('deadKitten')
 const closeButton = useTemplateRef<HTMLDivElement>('closeButton')
 const timeOut = ref<NodeJS.Timeout | null>(null)
-const animateMask = () => {
+
+const toggleClass = () => {
   homePage.value?.classList.toggle('lulujeje-home--mask-animation')
   setTimeout(() => {
     deadKitten.value?.classList.toggle('lulujeje-dead-kitten--mask-animation')
   }, 800)
+}
 
+const animateMask = () => {
+  toggleClass()
   if (timeOut.value) clearTimeout(timeOut.value)
-
   blameOnUser.value = ''
   closeButton.value?.classList.remove('fade-up')
   timeOut.value =  setTimeout(typewriter, 1500)
