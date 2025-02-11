@@ -145,6 +145,13 @@ const typewriter = async () => {
 <style lang="scss">
 @use "~/assets/scss/mixin.scss" as *;
 
+html, body {
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+}
+
 .main-content {
   --bg-color: #FFBBF9;
 
@@ -163,13 +170,6 @@ const typewriter = async () => {
   --footer-text-color: v-bind(currentColor.footerTextColor); // #FF2C2C;
 }
 
-html, body {
-  position: relative;
-  overflow: hidden;
-  height: 100%;
-  width: 100%;
-}
-
 .lulujeje-dead-kitten {
   transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 
@@ -181,10 +181,13 @@ html, body {
   background-repeat: no-repeat;
   justify-content: center;
   align-items: center;
+  position: absolute;
   display: flex;
-  height: 100vh;
+  height: 100%;
   width: 100%;
   z-index: 1;
+  left: 0;
+  top: 0;
 
   p {
     color: var(--dead-kitten-text);
