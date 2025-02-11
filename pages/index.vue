@@ -1,26 +1,28 @@
 <template>
-  <DeadCatMask />
+  <div class="main-content">
+    <DeadCatMask />
 
-  <main ref="deadKitten" class="lulujeje-dead-kitten">
-    <p class="lulujeje-dead-kitten__description" v-html="blameOnUser" />
-    <button ref="closeButton" @click="animateMask"><CrossIcon /></button>
-  </main>
+    <main ref="deadKitten" class="lulujeje-dead-kitten">
+      <p class="lulujeje-dead-kitten__description" v-html="blameOnUser" />
+      <button ref="closeButton" @click="animateMask"><CrossIcon /></button>
+    </main>
 
-  <main ref="homePage" class="lulujeje-home lulujeje-home--circles-bg-animation">
-    <div class="lulujeje-home__main-content">
-      <h1><Logo />Lulu & Jéjé</h1>
+    <main ref="homePage" class="lulujeje-home lulujeje-home--circles-bg-animation">
+      <div class="lulujeje-home__main-content">
+        <h1 @click="switchColor"><Logo />Lulu & Jéjé</h1>
 
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-        Phasellus nunc lacus, finibus vitae est eu, lobortis posuere eros.
-        In nec nulla sagittis justo cursus porttitor quis eget orci.
-      </p>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+          Phasellus nunc lacus, finibus vitae est eu, lobortis posuere eros.
+          In nec nulla sagittis justo cursus porttitor quis eget orci.
+        </p>
 
-      <button @click="animateMask">Don't click</button>
-    </div>
-  </main>
+        <button @click="animateMask">Don't click</button>
+      </div>
+    </main>
 
-  <footer class="lulujeje-home__footer">You can always drop us an email at <a href="mailto:hello@lulugege.com" title="Drop us an email!">hello@lulugege.com</a></footer>
+    <footer v-if="!blameOnUser" class="lulujeje-home__footer">You can always drop us an email at <a href="mailto:hello@lulugege.com" title="Drop us an email!">hello@lulugege.com</a></footer>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -30,7 +32,66 @@ import CrossIcon from '~/assets/icons/cross.svg'
 import Logo from '~/assets/icons/logo.svg'
 import DeadCatMask from '~/assets/icons/dead-cat-mask.svg'
 
+//Color switcher
 
+const COLORS = {
+  PINK: {
+    colorScheme: 'pink',
+    bgColorRadialLight: '#FFC8FA',
+    bgColorRadialDark: '#FFAEF8',
+    logoLetterColor: '#FFCCFC',
+    logoBgColor: '#FF2C2C',
+    textColor: '#FF2C2C',
+    buttonBgColor: '#FF2C2C',
+    buttonColor: '#FFFFFF',
+    deadKittenBgColor: '#FF2C2C',
+    deadKittenText: '#FFFFFF',
+    deadKittenNumber: '#FFBBF9',
+    footerTextColor: '#FF2C2C'
+  },
+  BLUE: {
+    colorScheme: 'blue',
+    bgColorRadialLight: '#D5F5F4',
+    bgColorRadialDark: '#B1EDED',
+    logoLetterColor: '#D5F5F4',
+    logoBgColor: '#335A03',
+    textColor: '#335A03',
+    buttonBgColor: '#335A03',
+    buttonColor: '#FFFFFF',
+    deadKittenBgColor: '#335A03',
+    deadKittenText: '#FFFFFF',
+    deadKittenNumber: '#D5F5F4',
+    footerTextColor: '#335A03'
+  },
+  YELLOW: {
+    colorScheme: 'yellow',
+    bgColorRadialLight: '#F5FF65',
+    bgColorRadialDark: '#F0FF00',
+    logoLetterColor: '#F5FF65',
+    logoBgColor: '#2B00BA',
+    textColor: '#2B00BA',
+    buttonBgColor: '#2B00BA',
+    buttonColor: '#FFFFFF',
+    deadKittenBgColor: '#2B00BA',
+    deadKittenText: '#FFFFFF',
+    deadKittenNumber: '#F5FF65',
+    footerTextColor: '#2B00BA'
+  }
+}
+
+const currentColor = ref(COLORS.PINK)
+const switchColor = () => {
+  switch (currentColor.value.colorScheme) {
+    case 'pink':
+      currentColor.value = COLORS.BLUE
+      break
+    case 'blue':
+      currentColor.value = COLORS.YELLOW
+      break
+    default:
+      currentColor.value = COLORS.PINK
+  }
+}
 // ES7 timer
 const timer = (ms: number) => new Promise(res => setTimeout(res, ms))
 
@@ -82,26 +143,22 @@ const typewriter = async () => {
 <style lang="scss">
 @use "~/assets/scss/mixin.scss" as *;
 
-:root {
-  --bg-color-radial-light: #FFC8FA;
-  --bg-color-radial-dark: #FFAEF8;
-
+.main-content {
   --bg-color: #FFBBF9;
 
-  --bg-color-dead-kitten: #FF2C2C;
+  --bg-color-radial-light: v-bind(currentColor.bgColorRadialLight); // #FFC8FA;
+  --bg-color-radial-dark: v-bind(currentColor.bgColorRadialDark); // #FFAEF8;
+  --logo-letter-color: v-bind(currentColor.logoLetterColor); // #FFCCFC;
+  --logo-bg-color: v-bind(currentColor.logoBgColor); // #FF2C2C;
+  --text-color: v-bind(currentColor.textColor); //  #FF2C2C;
+  --button-bg-color: v-bind(currentColor.buttonBgColor); //  #FF2C2C;
+  --button-color: v-bind(currentColor.buttonColor); // #FFFFFF;
 
-  --logo-letter-color: #FFCCFC;
-  --logo-bg-color: #FF2C2C;
+  --dead-kitten-bg-color: v-bind(currentColor.deadKittenBgColor); // #FF2C2C;
+  --dead-kitten-text: v-bind(currentColor.deadKittenText); // #FFFFFF;
+  --dead-kitten-number: v-bind(currentColor.deadKittenNumber); // #FFBBF9;
 
-  --text-color: #FF2C2C;
-
-  --button-bg-color: #FF2C2C;
-  --button-color: #FFFFFF;
-
-  --dead-kitten-text: #FFFFFF;
-  --dead-kitten-number: #FFBBF9;
-
-  --footer-text-color: #FF2C2C;
+  --footer-text-color: v-bind(currentColor.footerTextColor); // #FF2C2C;
 }
 
 html, body {
@@ -115,7 +172,7 @@ html, body {
   transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 
   background-image: url( '~/assets/images/deadcat.png' );
-  background-color: var(--bg-color-dead-kitten);
+  background-color: var(--dead-kitten-bg-color);
   background-position: center center;
   background-size: 0 0;
   background-blend-mode: overlay;
@@ -144,7 +201,7 @@ html, body {
   button {
     @include button-reset();
 
-    transition: all 0.6s ease-in-out;
+    transition: all 0.6s ease-in;
 
     left: calc(50% - 12px);
     pointer-events: none;
@@ -208,12 +265,12 @@ html, body {
       width: 100%;
 
       .logo-background {
-        transition: all 0.5s ease-in-out;
+        transition: all 0.2s ease-in-out;
         fill: var(--logo-bg-color);
       }
 
       .logo-letter {
-        transition: all 0.5s ease-in-out;
+        transition: all 0.2s ease-in-out;
         fill: var(--logo-letter-color);
       }
     }
@@ -264,9 +321,9 @@ html, body {
     margin: 0;
 
     a {
+      color: var(--footer-text-color);
       text-decoration: none;
       font-weight: 600;
-      color: #ff2c2c;
 
       &:hover {
         text-decoration: underline;
