@@ -13,6 +13,12 @@ useSeoMeta({
   ogDescription: 'This is my amazing site, let me tell you all about it.',
   twitterCard: 'summary_large_image',
 })
+
+useHead({
+  htmlAttrs: {
+    lang: "en"
+  }
+})
 </script>
 
 <style lang="scss">
