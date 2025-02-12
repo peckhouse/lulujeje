@@ -32,6 +32,25 @@ import CrossIcon from '~/assets/icons/cross.svg'
 import Logo from '~/assets/icons/logo.svg'
 import DeadCatMask from '~/assets/icons/dead-cat-mask.svg'
 
+const deadKittenCounter = ref<number>(0)
+type Counter = { counter: number }
+const supabase = useSupabaseClient<Counter>()
+
+const fetchCounter = async () => {
+  const { data, error } = await supabase
+    .from('deadkitten')
+    .select('counter')
+    .single()
+
+  if (data && !error) {
+    deadKittenCounter.value = data.counter
+  }
+
+  console.log('Counter:', deadKittenCounter.value)
+}
+
+onMounted(fetchCounter)
+
 //Color switcher
 const COLORS = {
   PINK: {
@@ -108,11 +127,25 @@ const toggleClass = () => {
 }
 
 const animateMask = () => {
+  incrementDeadKittenCounter()
   toggleClass()
   if (timeOut.value) clearTimeout(timeOut.value)
   blameOnUser.value = ''
   closeButton.value?.classList.remove('fade-up')
   timeOut.value =  setTimeout(typewriter, 1500)
+}
+
+const incrementDeadKittenCounter = async () => {
+  deadKittenCounter.value++
+
+  const { error } = await supabase
+    .from('deadkitten')
+    .update({ counter: deadKittenCounter.value })
+    .eq('id', 1)
+
+  if (error) {
+    console.error(error)
+  }
 }
 
 // Dead kitten type text
@@ -122,7 +155,6 @@ const sentences = ref([
   'Number of dead kitties: '
 ])
 const blameOnUser = ref('')
-const deadKittenCount = ref(20)
 
 const typewriter = async () => {
   for (const [sentenceIndex, sentence] of sentences.value.entries()) {
@@ -137,7 +169,7 @@ const typewriter = async () => {
   }
 
   await timer(60)
-  blameOnUser.value+= `<span>${deadKittenCount.value}</span>`
+  blameOnUser.value+= `<span>${deadKittenCounter.value}</span>`
   closeButton.value?.classList.add('fade-up')
 }
 </script>

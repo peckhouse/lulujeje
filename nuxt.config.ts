@@ -5,6 +5,7 @@ export default defineNuxtConfig({
   experimental: { appManifest: false },
   modules: [
     '@nuxt/scripts',
+    '@nuxtjs/supabase',
     '@nuxtjs/google-fonts',
     'nuxt-svgo'
   ],
@@ -27,5 +28,11 @@ export default defineNuxtConfig({
         wght: '200..900'
       }
     }
+  },
+  supabase: {
+    redirectOptions: {
+      login: '/',
+      callback: '/confirm'
+    },
   }
 })

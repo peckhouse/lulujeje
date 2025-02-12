@@ -18,6 +18,7 @@
     "vue-router": "latest"
   },
   "devDependencies": {
+    "@nuxtjs/supabase": "^1.4.0",
     "sass": "^1.83.4"
   }
 }
