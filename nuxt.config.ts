@@ -30,8 +30,8 @@ export default defineNuxtConfig({
     }
   },
   supabase: {
-    url: process.env.SUPABASE_URL,
-    key: process.env.SUPABASE_KEY,
+    url: 'https://jgacwrkyryimvrobcznt.supabase.co',
+    key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpnYWN3cmt5cnlpbXZyb2Jjem50Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzkzNjQ0NzcsImV4cCI6MjA1NDk0MDQ3N30.EvDrPnk1iaHZj7D2Pwgg0UknenaH3GquW49etycopDA',
     redirectOptions: {
       login: '/',
       callback: '/confirm'
