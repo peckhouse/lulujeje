@@ -34,5 +34,9 @@ export default defineNuxtConfig({
       login: '/',
       callback: '/confirm'
     }
+  },
+  routeRules: {
+    // Disable homepage pre-rendered at build time
+    '/': { prerender: false }
   }
 })
