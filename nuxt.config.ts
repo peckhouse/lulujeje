@@ -33,6 +33,6 @@ export default defineNuxtConfig({
     redirectOptions: {
       login: '/',
       callback: '/confirm'
-    },
+    }
   }
 })
