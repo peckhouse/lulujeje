@@ -7,9 +7,9 @@
       <button ref="closeButton" @click="toggleClass" aria-label="Go back"><CrossIcon /></button>
     </main>
 
-    <main ref="homePage" class="lulujeje-home lulujeje-home--circles-bg-animation">
+    <main ref="homePage" class="lulujeje-home" :class="`lulujeje-home--bg-${currentPattern}`">
       <div class="lulujeje-home__main-content">
-        <h1 @click="switchColor"><Logo />Lulu & Jéjé</h1>
+        <h1 @click="switchColorAndPattern"><Logo />Lulu & Jéjé</h1>
 
         <p>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -56,13 +56,31 @@ const incrementDeadKittenCounter = async () => {
     .eq('id', 1)
 }
 
+type ColorScheme = {
+  colorScheme: number
+  schemeName: string
+  bgColor: string
+  bgColorRadialLight: string
+  bgColorRadialDark: string
+  logoLetterColor: string
+  logoBgColor: string
+  textColor: string
+  buttonBgColor: string
+  buttonColor: string
+  deadKittenBgColor: string
+  deadKittenText: string
+  deadKittenNumber: string
+  footerTextColor: string
+}
 //Color switcher
-const COLORS = {
-  PINK: {
-    colorScheme: 'pink',
+const COLORS: ColorScheme[] = [
+  {
+    colorScheme: 0,
+    schemeName: 'pink',
+    bgColor: '#FFC8FA',
     bgColorRadialLight: '#FFC8FA',
     bgColorRadialDark: '#FFAEF8',
-    logoLetterColor: '#FFCCFC',
+    logoLetterColor: '#FFFFFF',
     logoBgColor: '#FF2C2C',
     textColor: '#FF2C2C',
     buttonBgColor: '#FF2C2C',
@@ -72,11 +90,13 @@ const COLORS = {
     deadKittenNumber: '#FFBBF9',
     footerTextColor: '#FF2C2C'
   },
-  BLUE: {
-    colorScheme: 'blue',
+  {
+    colorScheme: 1,
+    schemeName: 'blue',
+    bgColor: '#D5F5F4',
     bgColorRadialLight: '#D5F5F4',
     bgColorRadialDark: '#B1EDED',
-    logoLetterColor: '#D5F5F4',
+    logoLetterColor: '#FFFFFF',
     logoBgColor: '#335A03',
     textColor: '#335A03',
     buttonBgColor: '#335A03',
@@ -86,11 +106,13 @@ const COLORS = {
     deadKittenNumber: '#D5F5F4',
     footerTextColor: '#335A03'
   },
-  YELLOW: {
-    colorScheme: 'yellow',
+  {
+    colorScheme: 2,
+    schemeName: 'yellow',
+    bgColor: '#F5FF65',
     bgColorRadialLight: '#F5FF65',
     bgColorRadialDark: '#F0FF00',
-    logoLetterColor: '#F5FF65',
+    logoLetterColor: '#FFFFFF',
     logoBgColor: '#2B00BA',
     textColor: '#2B00BA',
     buttonBgColor: '#2B00BA',
@@ -100,19 +122,36 @@ const COLORS = {
     deadKittenNumber: '#F5FF65',
     footerTextColor: '#2B00BA'
   }
-}
-const currentColor = ref(COLORS.PINK)
-const switchColor = () => {
-  switch (currentColor.value.colorScheme) {
-    case 'pink':
-      currentColor.value = COLORS.BLUE
-      break
-    case 'blue':
-      currentColor.value = COLORS.YELLOW
-      break
-    default:
-      currentColor.value = COLORS.PINK
+]
+
+const currentColor = ref<ColorScheme | null>(null)
+const colorList = [0, 1, 2]
+const randomColor = () => {
+  if (currentColor.value === null) {
+    currentColor.value = COLORS[Math.floor(Math.random() * COLORS.length)]
+    return
   }
+
+  const possibleColors = COLORS.filter(color => color.colorScheme !== currentColor.value?.colorScheme)
+  currentColor.value = possibleColors[Math.floor(Math.random() * possibleColors.length)]
+}
+
+
+const currentPattern = ref<number | null>(null)
+const patternList = [0, 1, 2, 3, 4]
+const randomPattern = () => {
+  if (currentPattern.value === null) {
+    currentPattern.value = patternList[Math.floor(Math.random() * patternList.length)]
+    return
+  }
+
+  const possiblePatterns = patternList.filter(pattern => pattern !== currentPattern.value)
+  currentPattern.value = possiblePatterns[Math.floor(Math.random() * possiblePatterns.length)]
+}
+
+const switchColorAndPattern = () => {
+  randomColor()
+  randomPattern()
 }
 
 // ES7 timer
@@ -165,7 +204,13 @@ const typewriter = async () => {
   closeButton.value?.classList.add('fade-up')
 }
 
-onMounted(fetchCounter)
+onBeforeMount(() => {
+  switchColorAndPattern()
+})
+
+onMounted(() => {
+  fetchCounter()
+})
 </script>
 
 <style lang="scss">
@@ -179,21 +224,21 @@ html, body {
 }
 
 .main-content {
-  --bg-color: #FFBBF9;
+  --bg-color: v-bind(currentColor.bgColor);
 
-  --bg-color-radial-light: v-bind(currentColor.bgColorRadialLight); // #FFC8FA;
-  --bg-color-radial-dark: v-bind(currentColor.bgColorRadialDark); // #FFAEF8;
-  --logo-letter-color: v-bind(currentColor.logoLetterColor); // #FFCCFC;
-  --logo-bg-color: v-bind(currentColor.logoBgColor); // #FF2C2C;
-  --text-color: v-bind(currentColor.textColor); //  #FF2C2C;
-  --button-bg-color: v-bind(currentColor.buttonBgColor); //  #FF2C2C;
-  --button-color: v-bind(currentColor.buttonColor); // #FFFFFF;
+  --bg-color-radial-light: v-bind(currentColor.bgColorRadialLight);
+  --bg-color-radial-dark: v-bind(currentColor.bgColorRadialDark);
+  --logo-letter-color: v-bind(currentColor.logoLetterColor);
+  --logo-bg-color: v-bind(currentColor.logoBgColor);
+  --text-color: v-bind(currentColor.textColor);
+  --button-bg-color: v-bind(currentColor.buttonBgColor);
+  --button-color: v-bind(currentColor.buttonColor);
 
-  --dead-kitten-bg-color: v-bind(currentColor.deadKittenBgColor); // #FF2C2C;
-  --dead-kitten-text: v-bind(currentColor.deadKittenText); // #FFFFFF;
-  --dead-kitten-number: v-bind(currentColor.deadKittenNumber); // #FFBBF9;
+  --dead-kitten-bg-color: v-bind(currentColor.deadKittenBgColor);
+  --dead-kitten-text: v-bind(currentColor.deadKittenText);
+  --dead-kitten-number: v-bind(currentColor.deadKittenNumber);
 
-  --footer-text-color: v-bind(currentColor.footerTextColor); // #FF2C2C;
+  --footer-text-color: v-bind(currentColor.footerTextColor);
 }
 
 .lulujeje-dead-kitten {
@@ -266,11 +311,11 @@ html, body {
   transform-origin: center;
   transform-box: fill-box;
 
-  background-image: url('~/assets/images/home-background.png');
-  background-color: var(--bg-color);
   clip-path: url(#dead-cat-mask);
+  background-color: var(--bg-color);
   background-blend-mode: overlay;
-  background-size: auto 120px;
+  background-repeat: repeat;
+  background-position: 0 0;
   justify-content: center;
   align-items: center;
   position: absolute;
@@ -341,13 +386,13 @@ html, body {
   &__footer {
     color: var(--footer-text-color);
     font-family: "Roboto", serif;
+    width: calc(100% - 48px);
     padding: 0 24px 24px;
     position: absolute;
     text-align: center;
     font-weight: 500;
     font-size: 14px;
     z-index: 3;
-    width: calc(100% - 48px);
     bottom: 0;
     margin: 0;
 
@@ -362,14 +407,191 @@ html, body {
     }
   }
 
-  &--circles-bg-animation {
+  &--bg-0 {
     will-change: background;
-    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 0px, var(--bg-color-radial-dark) 50px, var(--bg-color-radial-light) 50px, var(--bg-color-radial-light) 100px);
-    animation: circles-gradients 1.6s ease infinite;
+    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 0px, var(--bg-color-radial-dark) 15px, var(--bg-color-radial-light) 15px, var(--bg-color-radial-light) 30px);
+    animation: bg0 1.6s linear infinite;
+  }
+
+  &--bg-1 {
+    animation: bg1 4s linear infinite;
+    background-image: url('~/assets/images/bg-1a.png');
+    background-size: 200px 200px;
+  }
+
+  &--bg-2 {
+    animation: bg1 4s linear infinite;
+    background-image: url('~/assets/images/bg-1b.png');
+    background-size: 200px 200px;
+  }
+
+  &--bg-3 {
+    animation: bg2a 4s linear infinite;
+    background-image: url('~/assets/images/bg-2a.png');
+    background-size: 140px 140px;
+  }
+
+  &--bg-4 {
+    animation: bg2b 4s linear infinite;
+    background-image: url('~/assets/images/bg-2b.png');
+    background-size: 140px 140px;
   }
 
   &--mask-animation {
     animation: mask-animation 0.8s forwards cubic-bezier(0.83, 0, 0.17, 1);
+  }
+}
+
+@keyframes bg0 {
+  0% {
+    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 0px, var(--bg-color-radial-dark) 20px, var(--bg-color-radial-light) 20px, var(--bg-color-radial-light) 40px);
+  }
+  2.5% {
+    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 1px, var(--bg-color-radial-dark) 21px, var(--bg-color-radial-light) 21px, var(--bg-color-radial-light) 41px);
+  }
+  5% {
+    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 2px, var(--bg-color-radial-dark) 22px, var(--bg-color-radial-light) 22px, var(--bg-color-radial-light) 42px);
+  }
+  7.5% {
+    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 3px, var(--bg-color-radial-dark) 23px, var(--bg-color-radial-light) 23px, var(--bg-color-radial-light) 43px);
+  }
+  10% {
+    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 4px, var(--bg-color-radial-dark) 24px, var(--bg-color-radial-light) 24px, var(--bg-color-radial-light) 44px);
+  }
+  12.5% {
+    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 5px, var(--bg-color-radial-dark) 25px, var(--bg-color-radial-light) 25px, var(--bg-color-radial-light) 45px);
+  }
+  15% {
+    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 6px, var(--bg-color-radial-dark) 26px, var(--bg-color-radial-light) 26px, var(--bg-color-radial-light) 46px);
+  }
+  17.5% {
+    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 7px, var(--bg-color-radial-dark) 27px, var(--bg-color-radial-light) 27px, var(--bg-color-radial-light) 47px);
+  }
+  20% {
+    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 8px, var(--bg-color-radial-dark) 28px, var(--bg-color-radial-light) 28px, var(--bg-color-radial-light) 48px);
+  }
+  22.5% {
+    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 9px, var(--bg-color-radial-dark) 29px, var(--bg-color-radial-light) 29px, var(--bg-color-radial-light) 49px);
+  }
+  25% {
+    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 10px, var(--bg-color-radial-dark) 30px, var(--bg-color-radial-light) 30px, var(--bg-color-radial-light) 50px);
+  }
+  27.5% {
+    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 11px, var(--bg-color-radial-dark) 31px, var(--bg-color-radial-light) 31px, var(--bg-color-radial-light) 51px);
+  }
+  30% {
+    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 12px, var(--bg-color-radial-dark) 32px, var(--bg-color-radial-light) 32px, var(--bg-color-radial-light) 52px);
+  }
+  32.5% {
+    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 13px, var(--bg-color-radial-dark) 33px, var(--bg-color-radial-light) 33px, var(--bg-color-radial-light) 53px);
+  }
+  35% {
+    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 14px, var(--bg-color-radial-dark) 34px, var(--bg-color-radial-light) 34px, var(--bg-color-radial-light) 54px);
+  }
+  37.5% {
+    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 15px, var(--bg-color-radial-dark) 35px, var(--bg-color-radial-light) 35px, var(--bg-color-radial-light) 55px);
+  }
+  40% {
+    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 16px, var(--bg-color-radial-dark) 36px, var(--bg-color-radial-light) 36px, var(--bg-color-radial-light) 56px);
+  }
+  42.5% {
+    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 17px, var(--bg-color-radial-dark) 37px, var(--bg-color-radial-light) 37px, var(--bg-color-radial-light) 57px);
+  }
+  45% {
+    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 18px, var(--bg-color-radial-dark) 38px, var(--bg-color-radial-light) 38px, var(--bg-color-radial-light) 58px);
+  }
+  47.5% {
+    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 19px, var(--bg-color-radial-dark) 39px, var(--bg-color-radial-light) 39px, var(--bg-color-radial-light) 59px);
+  }
+  50% {
+    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 20px, var(--bg-color-radial-dark) 40px, var(--bg-color-radial-light) 40px, var(--bg-color-radial-light) 60px);
+  }
+  52.5% {
+    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 21px, var(--bg-color-radial-dark) 41px, var(--bg-color-radial-light) 41px, var(--bg-color-radial-light) 61px);
+  }
+  55% {
+    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 22px, var(--bg-color-radial-dark) 42px, var(--bg-color-radial-light) 42px, var(--bg-color-radial-light) 62px);
+  }
+  57.5% {
+    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 23px, var(--bg-color-radial-dark) 43px, var(--bg-color-radial-light) 43px, var(--bg-color-radial-light) 63px);
+  }
+  60% {
+    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 24px, var(--bg-color-radial-dark) 44px, var(--bg-color-radial-light) 44px, var(--bg-color-radial-light) 64px);
+  }
+  62.5% {
+    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 25px, var(--bg-color-radial-dark) 45px, var(--bg-color-radial-light) 45px, var(--bg-color-radial-light) 65px);
+  }
+  65% {
+    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 26px, var(--bg-color-radial-dark) 46px, var(--bg-color-radial-light) 46px, var(--bg-color-radial-light) 66px);
+  }
+  67.5% {
+    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 27px, var(--bg-color-radial-dark) 47px, var(--bg-color-radial-light) 47px, var(--bg-color-radial-light) 67px);
+  }
+  70% {
+    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 28px, var(--bg-color-radial-dark) 48px, var(--bg-color-radial-light) 48px, var(--bg-color-radial-light) 68px);
+  }
+  72.5% {
+    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 29px, var(--bg-color-radial-dark) 49px, var(--bg-color-radial-light) 49px, var(--bg-color-radial-light) 69px);
+  }
+  75% {
+    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 30px, var(--bg-color-radial-dark) 50px, var(--bg-color-radial-light) 50px, var(--bg-color-radial-light) 70px);
+  }
+  77.5% {
+    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 31px, var(--bg-color-radial-dark) 51px, var(--bg-color-radial-light) 51px, var(--bg-color-radial-light) 71px);
+  }
+  80% {
+    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 32px, var(--bg-color-radial-dark) 52px, var(--bg-color-radial-light) 52px, var(--bg-color-radial-light) 72px);
+  }
+  82.5% {
+    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 33px, var(--bg-color-radial-dark) 53px, var(--bg-color-radial-light) 53px, var(--bg-color-radial-light) 73px);
+  }
+  85% {
+    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 34px, var(--bg-color-radial-dark) 54px, var(--bg-color-radial-light) 54px, var(--bg-color-radial-light) 74px);
+  }
+  87.5% {
+    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 35px, var(--bg-color-radial-dark) 55px, var(--bg-color-radial-light) 55px, var(--bg-color-radial-light) 75px);
+  }
+  90% {
+    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 36px, var(--bg-color-radial-dark) 56px, var(--bg-color-radial-light) 56px, var(--bg-color-radial-light) 76px);
+  }
+  92.5% {
+    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 37px, var(--bg-color-radial-dark) 57px, var(--bg-color-radial-light) 57px, var(--bg-color-radial-light) 77px);
+  }
+  95% {
+    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 38px, var(--bg-color-radial-dark) 58px, var(--bg-color-radial-light) 58px, var(--bg-color-radial-light) 78px);
+  }
+  97.5% {
+    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 39px, var(--bg-color-radial-dark) 59px, var(--bg-color-radial-light) 59px, var(--bg-color-radial-light) 79px);
+  }
+  100% {
+    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 40px, var(--bg-color-radial-dark) 60px, var(--bg-color-radial-light) 60px, var(--bg-color-radial-light) 80px);
+  }
+}
+
+@keyframes bg1 {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 200px 0;
+  }
+}
+
+@keyframes bg2a {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: -140px -140px;
+  }
+}
+
+@keyframes bg2b {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 140px -140px;
   }
 }
 
@@ -381,72 +603,6 @@ html, body {
   100% {
     width: 0;
     height: 0;
-  }
-}
-
-@keyframes circles-gradients {
-  0% {
-    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 0px, var(--bg-color-radial-dark) 50px, var(--bg-color-radial-light) 50px, var(--bg-color-radial-light) 100px);
-  }
-  5% {
-    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 5px, var(--bg-color-radial-dark) 55px, var(--bg-color-radial-light) 55px, var(--bg-color-radial-light) 105px);
-  }
-  10% {
-    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 10px, var(--bg-color-radial-dark) 60px, var(--bg-color-radial-light) 60px, var(--bg-color-radial-light) 110px);
-  }
-  15% {
-    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 15px, var(--bg-color-radial-dark) 65px, var(--bg-color-radial-light) 65px, var(--bg-color-radial-light) 115px);
-  }
-  20% {
-    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 20px, var(--bg-color-radial-dark) 70px, var(--bg-color-radial-light) 70px, var(--bg-color-radial-light) 120px);
-  }
-  25% {
-    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 25px, var(--bg-color-radial-dark) 75px, var(--bg-color-radial-light) 75px, var(--bg-color-radial-light) 125px);
-  }
-  30% {
-    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 30px, var(--bg-color-radial-dark) 80px, var(--bg-color-radial-light) 80px, var(--bg-color-radial-light) 130px);
-  }
-  35% {
-    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 35px, var(--bg-color-radial-dark) 85px, var(--bg-color-radial-light) 85px, var(--bg-color-radial-light) 135px);
-  }
-  40% {
-    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 40px, var(--bg-color-radial-dark) 90px, var(--bg-color-radial-light) 90px, var(--bg-color-radial-light) 140px);
-  }
-  45% {
-    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 45px, var(--bg-color-radial-dark) 95px, var(--bg-color-radial-light) 95px, var(--bg-color-radial-light) 145px);
-  }
-  50% {
-    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 50px, var(--bg-color-radial-dark) 100px, var(--bg-color-radial-light) 100px, var(--bg-color-radial-light) 150px);
-  }
-  55% {
-    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 55px, var(--bg-color-radial-dark) 105px, var(--bg-color-radial-light) 105px, var(--bg-color-radial-light) 155px);
-  }
-  60% {
-    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 60px, var(--bg-color-radial-dark) 110px, var(--bg-color-radial-light) 110px, var(--bg-color-radial-light) 160px);
-  }
-  65% {
-    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 65px, var(--bg-color-radial-dark) 115px, var(--bg-color-radial-light) 115px, var(--bg-color-radial-light) 165px);
-  }
-  70% {
-    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 70px, var(--bg-color-radial-dark) 120px, var(--bg-color-radial-light) 120px, var(--bg-color-radial-light) 170px);
-  }
-  75% {
-    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 75px, var(--bg-color-radial-dark) 125px, var(--bg-color-radial-light) 125px, var(--bg-color-radial-light) 175px);
-  }
-  80% {
-    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 80px, var(--bg-color-radial-dark) 130px, var(--bg-color-radial-light) 130px, var(--bg-color-radial-light) 180px);
-  }
-  85% {
-    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 85px, var(--bg-color-radial-dark) 135px, var(--bg-color-radial-light) 135px, var(--bg-color-radial-light) 185px);
-  }
-  90% {
-    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 90px, var(--bg-color-radial-dark) 140px, var(--bg-color-radial-light) 140px, var(--bg-color-radial-light) 190px);
-  }
-  95% {
-    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 95px, var(--bg-color-radial-dark) 145px, var(--bg-color-radial-light) 145px, var(--bg-color-radial-light) 195px);
-  }
-  100% {
-    background: repeating-radial-gradient(circle, var(--bg-color-radial-dark) 100px, var(--bg-color-radial-dark) 150px, var(--bg-color-radial-light) 150px, var(--bg-color-radial-light) 200px);
   }
 }
 
