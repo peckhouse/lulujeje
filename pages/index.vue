@@ -1,8 +1,8 @@
 <template>
-  <div class="main-content">
+  <div v-if="isLoaded" class="main-content">
     <DeadCatMask />
 
-    <main ref="deadKitten" v-if="isLoaded" class="lulujeje-dead-kitten">
+    <main ref="deadKitten"class="lulujeje-dead-kitten">
       <p class="lulujeje-dead-kitten__description" v-html="blameOnUser" />
       <button ref="closeButton" @click="toggleClassBack" aria-label="Go back"><CrossIcon /></button>
     </main>
@@ -153,10 +153,11 @@ const switchColorAndPattern = () => {
   randomColor()
   randomPattern()
 
-
   setTimeout(() => {
+    console.log('Loaded')
+    console.log('currentPattern', currentPattern.value)
     isLoaded.value = true
-  }, 300)
+  }, 100)
 }
 
 // ES7 timer
