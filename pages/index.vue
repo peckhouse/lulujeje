@@ -2,12 +2,12 @@
   <div class="main-content">
     <DeadCatMask />
 
-    <main ref="deadKitten" class="lulujeje-dead-kitten">
+    <main ref="deadKitten" v-if="isLoaded" class="lulujeje-dead-kitten">
       <p class="lulujeje-dead-kitten__description" v-html="blameOnUser" />
       <button ref="closeButton" @click="toggleClass" aria-label="Go back"><CrossIcon /></button>
     </main>
 
-    <main ref="homePage" class="lulujeje-home" :class="`lulujeje-home--bg-${currentPattern}`">
+    <main ref="homePage" class="lulujeje-home" :class="currentPatternClassName">
       <div class="lulujeje-home__main-content">
         <h1 @click="switchColorAndPattern"><Logo />Lulu & Jéjé</h1>
 
@@ -45,6 +45,10 @@ const fetchCounter = async () => {
 
   if (data && !error) {
     deadKittenCounter.value = data.counter
+
+    setTimeout(() => {
+      isLoaded.value = true
+    }, 300)
   }
 }
 
@@ -72,7 +76,6 @@ type ColorScheme = {
   deadKittenNumber: string
   footerTextColor: string
 }
-//Color switcher
 const COLORS: ColorScheme[] = [
   {
     colorScheme: 0,
@@ -139,6 +142,7 @@ const randomColor = () => {
 
 const currentPattern = ref<number | null>(null)
 const patternList = [0, 1, 2, 3, 4]
+const currentPatternClassName = computed(() => `lulujeje-home--bg-${currentPattern.value}`)
 const randomPattern = () => {
   if (currentPattern.value === null) {
     currentPattern.value = patternList[Math.floor(Math.random() * patternList.length)]
@@ -150,8 +154,8 @@ const randomPattern = () => {
 }
 
 const switchColorAndPattern = () => {
-  randomColor()
   randomPattern()
+  randomColor()
 }
 
 // ES7 timer
@@ -204,9 +208,9 @@ const typewriter = async () => {
   closeButton.value?.classList.add('fade-up')
 }
 
-onBeforeMount(() => {
-  switchColorAndPattern()
-})
+
+const isLoaded = ref(false)
+switchColorAndPattern()
 
 onMounted(() => {
   fetchCounter()
@@ -224,21 +228,21 @@ html, body {
 }
 
 .main-content {
-  --bg-color: v-bind(currentColor.bgColor);
+  --bg-color: v-bind(currentColor?.bgColor);
 
-  --bg-color-radial-light: v-bind(currentColor.bgColorRadialLight);
-  --bg-color-radial-dark: v-bind(currentColor.bgColorRadialDark);
-  --logo-letter-color: v-bind(currentColor.logoLetterColor);
-  --logo-bg-color: v-bind(currentColor.logoBgColor);
-  --text-color: v-bind(currentColor.textColor);
-  --button-bg-color: v-bind(currentColor.buttonBgColor);
-  --button-color: v-bind(currentColor.buttonColor);
+  --bg-color-radial-light: v-bind(currentColor?.bgColorRadialLight);
+  --bg-color-radial-dark: v-bind(currentColor?.bgColorRadialDark);
+  --logo-letter-color: v-bind(currentColor?.logoLetterColor);
+  --logo-bg-color: v-bind(currentColor?.logoBgColor);
+  --text-color: v-bind(currentColor?.textColor);
+  --button-bg-color: v-bind(currentColor?.buttonBgColor);
+  --button-color: v-bind(currentColor?.buttonColor);
 
-  --dead-kitten-bg-color: v-bind(currentColor.deadKittenBgColor);
-  --dead-kitten-text: v-bind(currentColor.deadKittenText);
-  --dead-kitten-number: v-bind(currentColor.deadKittenNumber);
+  --dead-kitten-bg-color: v-bind(currentColor?.deadKittenBgColor);
+  --dead-kitten-text: v-bind(currentColor?.deadKittenText);
+  --dead-kitten-number: v-bind(currentColor?.deadKittenNumber);
 
-  --footer-text-color: v-bind(currentColor.footerTextColor);
+  --footer-text-color: v-bind(currentColor?.footerTextColor);
 }
 
 .lulujeje-dead-kitten {
