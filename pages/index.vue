@@ -168,6 +168,7 @@ const closeButton = useTemplateRef<HTMLDivElement>('closeButton')
 const timeOut = ref<NodeJS.Timeout | null>(null)
 
 const toggleClass = () => {
+  blameOnUser.value = ''
   homePage.value?.classList.toggle('lulujeje-home--mask-animation')
   setTimeout(() => {
     deadKitten.value?.classList.toggle('lulujeje-dead-kitten--mask-animation')
@@ -178,7 +179,6 @@ const animateMask = () => {
   incrementDeadKittenCounter()
   toggleClass()
   if (timeOut.value) clearTimeout(timeOut.value)
-  blameOnUser.value = ''
   closeButton.value?.classList.remove('fade-up')
   timeOut.value =  setTimeout(typewriter, 1500)
 }
@@ -390,12 +390,12 @@ html, body {
   &__footer {
     color: var(--footer-text-color);
     font-family: "Roboto", serif;
-    width: calc(100% - 48px);
     padding: 0 24px 24px;
     position: absolute;
     text-align: center;
     font-weight: 500;
     font-size: 14px;
+    width: 100%;
     z-index: 3;
     bottom: 0;
     margin: 0;
