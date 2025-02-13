@@ -45,10 +45,6 @@ const fetchCounter = async () => {
 
   if (data && !error) {
     deadKittenCounter.value = data.counter
-
-    setTimeout(() => {
-      isLoaded.value = true
-    }, 300)
   }
 }
 
@@ -154,8 +150,13 @@ const randomPattern = () => {
 }
 
 const switchColorAndPattern = () => {
-  randomPattern()
   randomColor()
+  randomPattern()
+
+
+  setTimeout(() => {
+    isLoaded.value = true
+  }, 300)
 }
 
 // ES7 timer
