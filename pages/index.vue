@@ -4,7 +4,7 @@
 
     <main ref="deadKitten" v-if="isLoaded" class="lulujeje-dead-kitten">
       <p class="lulujeje-dead-kitten__description" v-html="blameOnUser" />
-      <button ref="closeButton" @click="toggleClass" aria-label="Go back"><CrossIcon /></button>
+      <button ref="closeButton" @click="toggleClassBack" aria-label="Go back"><CrossIcon /></button>
     </main>
 
     <main ref="homePage" class="lulujeje-home" :class="currentPatternClassName">
@@ -169,10 +169,22 @@ const timeOut = ref<NodeJS.Timeout | null>(null)
 
 const toggleClass = () => {
   blameOnUser.value = ''
-  homePage.value?.classList.toggle('lulujeje-home--mask-animation')
+  homePage.value?.classList.add('lulujeje-home--mask-animation')
   setTimeout(() => {
-    deadKitten.value?.classList.toggle('lulujeje-dead-kitten--mask-animation')
+    deadKitten.value?.classList.add('lulujeje-dead-kitten--mask-animation')
   }, 800)
+}
+
+const toggleClassBack = () => {
+  blameOnUser.value = ''
+  deadKitten.value?.classList.remove('lulujeje-dead-kitten--mask-animation')
+  setTimeout(() => {
+    homePage.value?.classList.remove('lulujeje-home--mask-animation')
+    homePage.value?.classList.add('lulujeje-home--mask-animation-back')
+  }, 500)
+  setTimeout(() => {
+    homePage.value?.classList.remove('lulujeje-home--mask-animation-back')
+  }, 1300)
 }
 
 const animateMask = () => {
@@ -281,7 +293,7 @@ html, body {
   button {
     @include button-reset();
 
-    transition: all 0.6s ease-in;
+    transition: all 0.3s ease-out;
 
     left: calc(50% - 12px);
     pointer-events: none;
@@ -443,6 +455,10 @@ html, body {
 
   &--mask-animation {
     animation: mask-animation 0.8s forwards cubic-bezier(0.83, 0, 0.17, 1);
+  }
+
+  &--mask-animation-back {
+    animation: mask-animation-back 0.8s forwards cubic-bezier(0.83, 0, 0.17, 1);
   }
 }
 
@@ -607,6 +623,17 @@ html, body {
   100% {
     width: 0;
     height: 0;
+  }
+}
+
+@keyframes mask-animation-back {
+  0% {
+    width: 0;
+    height: 0;
+  }
+  100% {
+    width: 2052px;
+    height: 1704px;
   }
 }
 
