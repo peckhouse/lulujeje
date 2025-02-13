@@ -12,9 +12,9 @@
         <h1 @click="switchColorAndPattern"><Logo />Lulu & Jéjé</h1>
 
         <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-          Phasellus nunc lacus, finibus vitae est eu, lobortis posuere eros.
-          In nec nulla sagittis justo cursus porttitor quis eget orci.
+          <span>We are Ludovic (Lulu) and Jérôme (Jéjé).</span>
+          <span>We craft your online identity one pixel at a time,</span>
+          <span>inspired by Shonan's seaside vibes.</span>
         </p>
 
         <button @click="animateMask">Don't click</button>
@@ -374,6 +374,10 @@ html, body {
       margin: 0 0 24px;
       font-weight: 500;
       font-size: 14px;
+
+      span {
+        display: inline-block;
+      }
     }
 
     button {
