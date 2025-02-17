@@ -1,7 +1,5 @@
 <template>
   <div v-if="isLoaded" class="main-content">
-    <DeadCatMask />
-
     <main ref="deadKitten"class="lulujeje-dead-kitten">
       <p class="lulujeje-dead-kitten__description" v-html="blameOnUser" />
       <button ref="closeButton" @click="toggleClassBack" aria-label="Go back"><CrossIcon /></button>
@@ -30,7 +28,6 @@ import { ref } from 'vue'
 
 import CrossIcon from '~/assets/icons/cross.svg'
 import Logo from '~/assets/icons/logo.svg'
-import DeadCatMask from '~/assets/icons/dead-cat-mask.svg'
 
 type Counter = { counter: number }
 
@@ -124,7 +121,6 @@ const COLORS: ColorScheme[] = [
 ]
 
 const currentColor = ref<ColorScheme | null>(null)
-const colorList = [0, 1, 2]
 const randomColor = () => {
   if (currentColor.value === null) {
     currentColor.value = COLORS[Math.floor(Math.random() * COLORS.length)]
@@ -137,7 +133,7 @@ const randomColor = () => {
 
 
 const currentPattern = ref<number | null>(null)
-const patternList = [0, 1, 2, 3, 4]
+const patternList = [0, 1, 2, 3]
 const currentPatternClassName = computed(() => `lulujeje-home--bg-${currentPattern.value}`)
 const randomPattern = () => {
   if (currentPattern.value === null) {
@@ -154,8 +150,6 @@ const switchColorAndPattern = () => {
   randomPattern()
 
   setTimeout(() => {
-    console.log('Loaded')
-    console.log('currentPattern', currentPattern.value)
     isLoaded.value = true
   }, 100)
 }
@@ -325,11 +319,12 @@ html, body {
 }
 
 .lulujeje-home {
+  transition: 0.8s cubic-bezier(0.83, 0, 0.17, 1);
   transform: translate3d(-50%, -50%, 0);
   transform-origin: center;
   transform-box: fill-box;
 
-  clip-path: url(#dead-cat-mask);
+  clip-path: circle(100% at center);
   background-color: var(--bg-color);
   background-blend-mode: overlay;
   background-repeat: repeat;
@@ -359,12 +354,12 @@ html, body {
       width: 100%;
 
       .logo-background {
-        transition: all 0.2s ease-in-out;
+        transition: all 0.1s ease-in-out;
         fill: var(--logo-bg-color);
       }
 
       .logo-letter {
-        transition: all 0.2s ease-in-out;
+        transition: all 0.1s ease-in-out;
         fill: var(--logo-letter-color);
       }
     }
@@ -437,34 +432,24 @@ html, body {
 
   &--bg-1 {
     animation: bg1 4s linear infinite;
-    background-image: url('~/assets/images/bg-1a.png');
-    background-size: 200px 200px;
+    background-image: url('~/assets/images/bg-1.png');
+    background-size: 140px 140px;
   }
 
   &--bg-2 {
-    animation: bg1 4s linear infinite;
-    background-image: url('~/assets/images/bg-1b.png');
-    background-size: 200px 200px;
+    animation: bg2 4s linear infinite;
+    background-image: url('~/assets/images/bg-2.png');
+    background-size: 140px 140px;
   }
 
   &--bg-3 {
-    animation: bg2a 4s linear infinite;
-    background-image: url('~/assets/images/bg-2a.png');
-    background-size: 140px 140px;
-  }
-
-  &--bg-4 {
-    animation: bg2b 4s linear infinite;
-    background-image: url('~/assets/images/bg-2b.png');
-    background-size: 140px 140px;
+    animation: bg3 4s linear infinite;
+    background-image: url('~/assets/images/bg-3.png');
+    background-size: 70px 70px;
   }
 
   &--mask-animation {
-    animation: mask-animation 0.8s forwards cubic-bezier(0.83, 0, 0.17, 1);
-  }
-
-  &--mask-animation-back {
-    animation: mask-animation-back 0.8s forwards cubic-bezier(0.83, 0, 0.17, 1);
+    clip-path: circle(0% at center);
   }
 }
 
@@ -599,20 +584,11 @@ html, body {
     background-position: 0 0;
   }
   100% {
-    background-position: 200px 0;
-  }
-}
-
-@keyframes bg2a {
-  0% {
-    background-position: 0 0;
-  }
-  100% {
     background-position: -140px -140px;
   }
 }
 
-@keyframes bg2b {
+@keyframes bg2 {
   0% {
     background-position: 0 0;
   }
@@ -621,14 +597,12 @@ html, body {
   }
 }
 
-@keyframes mask-animation {
+@keyframes bg3{
   0% {
-    width: 2052px;
-    height: 1704px;
+    background-position: 0 0;
   }
   100% {
-    width: 0;
-    height: 0;
+    background-position: 140px 35px;
   }
 }
 
