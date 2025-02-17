@@ -319,7 +319,6 @@ html, body {
 }
 
 .lulujeje-home {
-  transition: 0.8s cubic-bezier(0.83, 0, 0.17, 1);
   transform: translate3d(-50%, -50%, 0);
   transform-origin: center;
   transform-box: fill-box;
@@ -448,7 +447,12 @@ html, body {
     background-size: 70px 70px;
   }
 
+  &--mask-animation-back {
+    transition: 0.8s cubic-bezier(0.83, 0, 0.17, 1);
+  }
+
   &--mask-animation {
+    transition: 0.8s cubic-bezier(0.83, 0, 0.17, 1);
     clip-path: circle(0% at center);
   }
 }
